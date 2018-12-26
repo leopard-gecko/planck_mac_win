@@ -30,7 +30,6 @@ enum planck_keycodes {
   WN_SCLN,          // タップでJISの「;」  シフトでJISの「:」
   TGL_RIS,          // トグルでRaiseレイヤーに切り替え
   TGL_LOW,          // トグルでLowerレイヤーに切り替え
-  GUI_F1,           // ウインドウ切り替えショートカット       (Mac)
   MACRO_1,          // 以下、マクロ
   MACRO_2,
   MACRO_3,
@@ -50,8 +49,6 @@ enum user_macro {
 #define FN1_ESC LT(_FUNC1,KC_ESC)     // タップでESC                 ホールドでFunction_1レイヤーon
 #define FN2_TAB LT(_FUNC2,KC_TAB)     // タップでTab                 ホールドでFunction_2レイヤーon
 #define RSFT_QT MT(MOD_RSFT,KC_QUOT)  // タップで「'」               ホールドで右Shift
-#define CTL_ZH  CTL_T(KC_ZKHK)        // タップで半角/全角(Windows)  ホールドで左Control
-#define GUI_ZH  GUI_T(KC_ZKHK)        // タップで半角/全角(Windows)  ホールドで左Command(JISレイヤー用。実質は左Control)
 #define ADJUST  MO(_ADJUST)           // ホールドでAdjustレイヤーをon
 #define RSFT_QT MT(MOD_RSFT,KC_QUOT)  // タップで「'」      ホールドで右Shift       (US配列用)
 #define MY_VOLD LALT(LSFT(KC_VOLD))   // 細かいボリュームダウン                     (Mac)
@@ -61,6 +58,15 @@ enum user_macro {
 #define TASK    LCA(KC_DEL)           // タスクマネージャー起動ショートカット       (Windows)
 #define TAB_NX  LGUI(KC_TAB)          // 次のタブを選択                             (mac)
 #define TAB_PRV LGUI(LSFT(KC_TAB))    // 前のタブを選択                             (mac)
+#ifdef SWAP_LCTR_LGUI                 // ControlキーとCommandキーを入れ替えているか？
+  #define CTL_ZH  GUI_T(KC_ZKHK)      // タップで半角/全角(Windows)  ホールドで左Control(USレイヤー用)
+  #define MY_GUI  KC_LCTL
+  #define GUI_F1  LCTL(KC_F1)         // ウインドウ切り替えショートカット       (Mac)
+#else
+  #define CTL_ZH  CTL_T(KC_ZKHK)      // タップで半角/全角(Windows)  ホールドで左Control(USレイヤー用)
+  #define MY_GUI  KC_LGUI
+  #define GUI_F1  LGUI(KC_F1)         // ウインドウ切り替えショートカット       (Mac)
+#endif
 
 // Tap Danceの設定
 #ifdef TAP_DANCE_ENABLE
@@ -90,7 +96,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {FN2_TAB, KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC},
   {FN1_ESC, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    WN_SCLN, KC_ENT },
   {TAP_L  , KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, SFT_JQT},
-  {GUI_ZH,  ADJUST,  KC_LALT, KC_LCTL, M_EMHL,  KC_SPC,  KC_SPC,  M_KHKR,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT}
+  {CTL_ZH,  ADJUST,  KC_LALT, MY_GUI,  M_EMHL,  KC_SPC,  KC_SPC,  M_KHKR,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT}
 },
 
 /* デフォルトレイヤー（ US配列で認識） */
@@ -252,7 +258,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static bool rshift = false;
     static uint8_t dl;
     static uint8_t l_r_layer;
-    static uint8_t my_gui;
     
   switch (keycode) {
     case JIS:                               // デフォルトレイヤーをJISに切り替え
@@ -401,23 +406,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #endif
       }
       return true;
-      break;
-    case GUI_F1:
-        // macの設定でコマンドキーとコントロールキーを入れ替えているのでJIS/USレイヤーで処理を変える
-        if (record->event.pressed) {
-          dl = biton32(default_layer_state);
-          if (dl == _JIS) {
-            my_gui = KC_LCTL;
-          } else if (dl == _US) {
-            my_gui = KC_LGUI;
-          }
-          register_code (my_gui);
-          register_code (KC_F1);
-        } else {
-          unregister_code (KC_F1);
-          unregister_code (my_gui);
-        }
-      return false;
       break;
     case BL_TOGG:                          // LED光量が変更された時に音を鳴らす
     case BL_DEC:
