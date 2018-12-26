@@ -9,6 +9,8 @@
 #define BACKLIGHT_BREATHING
 #define TAPPING_TERM 135
 
+#define SWAP_LCTR_LGUI
+
 #ifdef AUDIO_ENABLE
 
     #define LAYER_LOCK_ON_SOUND \
