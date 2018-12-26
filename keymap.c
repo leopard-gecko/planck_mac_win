@@ -18,7 +18,7 @@ enum planck_layers {
   _RAISE,           // Raise
   _RAISE_US,        // Raise (US配列用)
   _FUNC1,           // Function_1      移動、レイヤートグルなど
-  _FUNC2,           // Function_2      マクロ、ショートカットなど
+  _FUNC2,           // Function_2      マクロ用
   _ADJUST           // Adjust          設定変更など
 };
 
