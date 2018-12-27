@@ -214,6 +214,15 @@ void matrix_init_user(void) {
     #endif
 }
 
+// レイヤー初期化
+void init_layer(void) {
+    layer_off(_LOWER);
+    layer_off(_RAISE);
+    #ifdef BACKLIGHT_ENABLE
+      led_breathing_off();
+    #endif
+}
+
 // サウンド設定
 #ifdef AUDIO_ENABLE
   float layer_lock_on_song[][2]  = SONG(LAYER_LOCK_ON_SOUND);   // Layerロック
@@ -246,15 +255,6 @@ void led_breathing_off(void) {
     backlight_disable();
 }
 #endif
-
-// レイヤー初期化
-void init_layer(void) {
-    layer_off(_LOWER);
-    layer_off(_RAISE);
-    #ifdef BACKLIGHT_ENABLE
-      led_breathing_off();
-    #endif
-}
 
 // 特殊キーが押された時の動作
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
