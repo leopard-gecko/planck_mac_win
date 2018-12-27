@@ -441,9 +441,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           PLAY_SONG(adjust_on_song);
         #endif
       } else {
-          #ifdef AUDIO_ENABLE
+        #ifdef AUDIO_ENABLE
             PLAY_SONG(adjust_off_song);
-          #endif
+        #endif
       }
       return true;
       break;
