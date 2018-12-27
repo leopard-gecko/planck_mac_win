@@ -220,7 +220,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // LED点灯 & Breathing
 #ifdef BACKLIGHT_ENABLE
 void led_breathing_on(uint8_t breathingspeed, bool breathing) {
-    backlight_set(1);
+    backlight_enable();
     #ifdef BACKLIGHT_BREATHING
       breathing_period_set(breathingspeed);
       if (breathing) {
@@ -236,7 +236,7 @@ void led_breathing_off(void) {
       breathing_period_set(1);
       breathing_self_disable();
     #endif
-    backlight_set(0);
+    backlight_disable();
 }
 #endif
 
