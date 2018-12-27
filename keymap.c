@@ -63,9 +63,9 @@ enum user_macro {
   #define MY_GUI  KC_LCTL
   #define GUI_F1  LCTL(KC_F1)         // ウインドウ切り替えショートカット       (Mac)
 #else
-  #define CTL_ZH  CTL_T(KC_ZKHK)      
+  #define CTL_ZH  CTL_T(KC_ZKHK)
   #define MY_GUI  KC_LGUI
-  #define GUI_F1  LGUI(KC_F1)         
+  #define GUI_F1  LGUI(KC_F1)
 #endif
 
 // Tap Danceの設定
@@ -218,47 +218,47 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #endif
 
 // LED点灯 & Breathing
+#ifdef BACKLIGHT_ENABLE
 void led_breathing_on(uint8_t breathingspeed, bool breathing) {
-    #ifdef BACKLIGHT_ENABLE
-      backlight_set(1);
-      #ifdef BACKLIGHT_BREATHING
-        breathing_period_set(breathingspeed);
-        if (breathing) {
-            breathing_enable();
-        } else {
-            breathing_pulse();
-        }
-      #endif
+    backlight_set(1);
+    #ifdef BACKLIGHT_BREATHING
+      breathing_period_set(breathingspeed);
+      if (breathing) {
+        breathing_enable();
+      } else {
+        breathing_pulse();
+      }
     #endif
 }
 // LED消す
 void led_breathing_off(void) {
-    #ifdef BACKLIGHT_ENABLE
-      #ifdef BACKLIGHT_BREATHING
-        breathing_period_set(1);
-        breathing_self_disable();
-      #endif
-      backlight_set(0);
+    #ifdef BACKLIGHT_BREATHING
+      breathing_period_set(1);
+      breathing_self_disable();
     #endif
+    backlight_set(0);
 }
+#endif
 
 // レイヤー初期化
 void init_layer(void) {
     layer_off(_LOWER);
     layer_off(_RAISE);
-    led_breathing_off();
+    #ifdef BACKLIGHT_ENABLE
+      led_breathing_off();
+    #endif
 }
 
 // 特殊キーが押された時の動作
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
-    static uint16_t custom_timer;    
+    static uint16_t custom_timer;
     static uint8_t prev_shift;
     static bool lshift = false;
     static bool rshift = false;
     static uint8_t dl;
     static uint8_t l_r_layer;
-    
+
   switch (keycode) {
     case JIS:                               // デフォルトレイヤーをJISに切り替え
       if (record->event.pressed) {
@@ -284,22 +284,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if(dl == _JIS){
                l_r_layer = _RAISE;
             } else if (dl == _US) {
-               l_r_layer = _RAISE_US;    
+               l_r_layer = _RAISE_US;
             }
         }
         if IS_LAYER_ON(l_r_layer){
             layer_off(l_r_layer);
-            led_breathing_off();
+            #ifdef BACKLIGHT_ENABLE
+              led_breathing_off();
+            #endif
             #ifdef AUDIO_ENABLE
               PLAY_SONG(layer_lock_off_song);
             #endif
         } else {
             layer_on(l_r_layer);
+            #ifdef BACKLIGHT_ENABLE
             if (keycode == TGL_LOW){
                 led_breathing_on(3, true);
             } else if (keycode == TGL_RIS){
                 led_breathing_on(1, false);
             }
+            #endif
             #ifdef AUDIO_ENABLE
               PLAY_SONG(layer_lock_on_song);
             #endif
@@ -318,7 +322,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     l_r_layer = _RAISE;
                 } else if (keycode == M_KHRU){
                     l_r_layer = _RAISE_US;
-                } 
+                }
             layer_off(l_r_layer);
             #ifdef AUDIO_ENABLE
               PLAY_SONG(layer_lock_off_song);
@@ -326,17 +330,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
             break;
           } else {                         // レイヤーがトグルされていなければキーが押されている間はLED点灯
-            if (keycode == M_EMHL){
-                led_breathing_on(3, true);
-            } else if ((keycode == M_KHKR) || (keycode == M_KHRU)){
-                led_breathing_on(1, false);
-            }
+            #ifdef BACKLIGHT_ENABLE
+              if (keycode == M_EMHL){
+                  led_breathing_on(3, true);
+              } else if ((keycode == M_KHKR) || (keycode == M_KHRU)){
+                  led_breathing_on(1, false);
+              }
+            #endif
           }
         } else {                           // キーを離したらLED消灯
-        led_breathing_off();
+          #ifdef BACKLIGHT_ENABLE
+            led_breathing_off();
+          #endif
         }
       return true;
       break;
+    #ifdef BACKLIGHT_ENABLE
     case FN2_TAB:                          // LED点灯／消灯
        if (record->event.pressed) {
         if (!(IS_LAYER_ON(_LOWER) || IS_LAYER_ON(_RAISE) || IS_LAYER_ON(_RAISE_US))){
@@ -361,6 +370,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        }
       return true;
       break;
+    #endif
     case SFT_JQT:                          // 長押しでシフトキー、単押しで「'」
       if (record->event.pressed) {
         custom_timer = timer_read();
@@ -503,14 +513,18 @@ void x_finished_1 (qk_tap_dance_state_t *state, void *user_data) {
     case SINGLE_TAP: register_code(KC_LSFT); break;
     case SINGLE_HOLD: register_code(KC_LSFT); break;
     case DOUBLE_TAP:
-        layer_invert(_LOWER); 
+        layer_invert(_LOWER);
         if (IS_LAYER_ON(_LOWER)){
-            led_breathing_on(3, true);
+            #ifdef BACKLIGHT_ENABLE
+              led_breathing_on(3, true);
+            #endif
             #ifdef AUDIO_ENABLE
               PLAY_SONG(layer_lock_on_song);
             #endif
         } else {
-        led_breathing_off();
+        #ifdef BACKLIGHT_ENABLE
+          led_breathing_off();
+        #endif
         #ifdef AUDIO_ENABLE
             PLAY_SONG(layer_lock_off_song);
         #endif
