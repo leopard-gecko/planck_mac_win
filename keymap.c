@@ -207,6 +207,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
+// 初期設定
+void matrix_init_user(void) {
+    #ifdef BACKLIGHT_ENABLE
+    backlight_disable();             // LEDを消しておく
+    #endif
+}
+
 // サウンド設定
 #ifdef AUDIO_ENABLE
   float layer_lock_on_song[][2]  = SONG(LAYER_LOCK_ON_SOUND);   // Layerロック
