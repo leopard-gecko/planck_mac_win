@@ -151,21 +151,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {_______, _______, _______, _______, XXXXXXX, _______, _______, _______, _______, _______, _______, _______}
 },
 
-/* Function_1  移動、ウインドウやタブの切り替え、レイヤーのトグル
+/* Function_1  移動、ウインドウやタブの切り替え、レイヤーのトグル、マウス操作（デフォルトではオフ）
  * ,-----------------------------------------------------------------------------------.
- * |PrintS|      |      |      |      |      | End  |PG Dn |PG Up | Home |      |  Del |
+ * |PrintS|WH-Rt |WH-Up |WH-Dn |WH-Lt |      | End  |PG Dn |PG Up | Home |      |  Del |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |      |      |      |      | ⌘F1 | Left | Down |  Up  |Right |      |      |
+ * |      | M-Lt | M-Dn | M-Up | M-Rt | ⌘F1 | Left | Down |  Up  |Right |Speed1|      |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
- * |      |      |      |      |      |^⇧TAB| ^TAB |      |      |      |      |      |
+ * |      |      | M-B3 | M-B2 | M-B1 |^⇧TAB| ^TAB | M-B1 | M-B2 | M-B3 |Speed0|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |      |      |TglLow|             |TglRis| End  |Pg Dn |Pg Up | Home |
  * `-----------------------------------------------------------------------------------'
  */
 [_FUNC1] = {
-  {ALT_PSC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_END,  KC_PGDN, KC_PGUP, KC_HOME, XXXXXXX, KC_DEL },
-  {_______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, GUI_F1,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, _______},
-  {_______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TAB_PRV, TAB_NX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX},
+  {ALT_PSC, KC_WH_R, KC_WH_U, KC_WH_D, KC_WH_L, XXXXXXX, KC_END,  KC_PGDN, KC_PGUP, KC_HOME, XXXXXXX, KC_DEL },
+  {_______, KC_MS_L, KC_MS_D, KC_MS_U, KC_MS_R, GUI_F1,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_ACL1, _______},
+  {_______, XXXXXXX, KC_BTN3, KC_BTN2, KC_BTN1, TAB_PRV, TAB_NX,  KC_BTN1, KC_BTN2, KC_BTN3, KC_ACL0, XXXXXXX},
   {_______, _______, _______, _______, TGL_LOW, _______, _______, TGL_RIS, KC_END,  KC_PGDN, KC_PGUP, KC_HOME}
 },
 
