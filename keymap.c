@@ -373,7 +373,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return true;
       break;
     #endif
-    case SFT_JQT:                          // 長押しでシフトキー、単押しで「'」
+    case SFT_JQT:                          // 長押しでシフトキー、単押しでJISの「'」か「"」
       if (record->event.pressed) {
         custom_timer = timer_read();
         prev_shift = keyboard_report->mods & (MOD_BIT(KC_LSFT) | MOD_BIT(KC_RSFT));
