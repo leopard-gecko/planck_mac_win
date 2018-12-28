@@ -59,13 +59,13 @@ enum user_macro {
 #define TAB_NX  LGUI(KC_TAB)          // 次のタブを選択                             (mac)
 #define TAB_PRV LGUI(LSFT(KC_TAB))    // 前のタブを選択                             (mac)
 #ifdef SWAP_LCTR_LGUI                 // MacでControlキーとCommandキーを入れ替えている場合の設定
-  #define CTL_ZH  GUI_T(KC_ZKHK)      // タップで半角/全角(Windows)  ホールドで左Control(USレイヤー用)
-  #define MY_GUI  KC_LCTL
-  #define GUI_F1  LCTL(KC_F1)         // ウインドウ切り替えショートカット       (Mac)
-#else
-  #define CTL_ZH  CTL_T(KC_ZKHK)
-  #define MY_GUI  KC_LGUI
-  #define GUI_F1  LGUI(KC_F1)
+  #define CTL_ZH  GUI_T(KC_ZKHK)      // タップで半角/全角(Windows)  ホールドで左Command(実質はControlキー) (JISレイヤー用)
+  #define MY_GUI  KC_LCTL             // ControlキーをCommandキーとして使う
+  #define GUI_F1  LCTL(KC_F1)         // ウインドウ切り替えショートカット           (Mac)
+#else                                 // MacでControlキーとCommandキーを入れ替えない場合
+  #define CTL_ZH  CTL_T(KC_ZKHK)      // タップで半角/全角(Windows)  ホールドで左Control (USレイヤー用)
+  #define MY_GUI  KC_LGUI             // CommandキーはCommandキーのまま使う
+  #define GUI_F1  LGUI(KC_F1)         // ウインドウ切り替えショートカット           (Mac)
 #endif
 
 // Tap Danceの設定
