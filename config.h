@@ -3,9 +3,6 @@
 
 #include "../../config.h"
 
-#define NO_DEBUG
-#define NO_PRINT
-
 #define BACKLIGHT_BREATHING
 #define TAPPING_TERM 135
 

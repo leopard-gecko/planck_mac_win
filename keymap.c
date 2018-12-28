@@ -70,16 +70,6 @@ enum user_macro {
   #define GUI_F1  LGUI(KC_F1)         // ウインドウ切り替えショートカット           (Mac)
 #endif
 
-// Tap Danceの設定
-#ifdef TAP_DANCE_ENABLE
-  enum {
-   X_TAP_DANCE_1 = 0,
-  };
-  #define TAP_L TD(X_TAP_DANCE_1)     // タップかホールドで左Shift  ダブルタップでLowerレイヤーのトグル
-#else
-  #define TAP_L KC_LSFT               // Tap Danceが有効でなければ普通の左シフトキーに設定
-#endif
-
 // キーマップ
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -97,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_JIS] = {
   {FN2_TAB, KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC},
   {FN1_ESC, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    WN_SCLN, KC_ENT },
-  {TAP_L  , KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, SFT_JQT},
+  {KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, SFT_JQT},
   {CTL_ZH,  ADJUST,  KC_LALT, MY_GUI,  M_EMHL,  KC_SPC,  KC_SPC,  M_KHKR,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT}
 },
 
@@ -478,73 +468,3 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
         };
         return MACRO_NONE;
 }
-
-// Tap danceの設定
-#ifdef TAP_DANCE_ENABLE
-enum {
-  SINGLE_TAP = 1,
-  SINGLE_HOLD = 2,
-  DOUBLE_TAP = 3,
-};
-
-typedef struct {
-  bool is_press_action;
-  int state;
-} tap;
-
-int cur_dance (qk_tap_dance_state_t *state) {
-  if (state->count == 1) {
-    if (state->interrupted || state->pressed==0) return SINGLE_TAP;
-    else return SINGLE_HOLD;
-  }
-  else if (state->count == 2) {
-    return DOUBLE_TAP;
-  }
-  else return 6; //magic number. At some point this method will expand to work for more presses
-}
-
-//instanalize an instance of 'tap' for the 'x' tap dance.
-static tap xtap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-void x_finished_1 (qk_tap_dance_state_t *state, void *user_data) {
-  xtap_state.state = cur_dance(state);
-  switch (xtap_state.state) {
-    case SINGLE_TAP: register_code(KC_LSFT); break;
-    case SINGLE_HOLD: register_code(KC_LSFT); break;
-    case DOUBLE_TAP:
-        layer_invert(_LOWER);
-        if (IS_LAYER_ON(_LOWER)){
-            #ifdef BACKLIGHT_ENABLE
-              led_breathing_on(3, true);
-            #endif
-            #ifdef AUDIO_ENABLE
-              PLAY_SONG(layer_lock_on_song);
-            #endif
-        } else {
-        #ifdef BACKLIGHT_ENABLE
-          led_breathing_off();
-        #endif
-        #ifdef AUDIO_ENABLE
-            PLAY_SONG(layer_lock_off_song);
-        #endif
-        }
-         break;
-  }
-}
-
-void x_reset_1 (qk_tap_dance_state_t *state, void *user_data) {
-  switch (xtap_state.state) {
-    case SINGLE_TAP: unregister_code(KC_LSFT); break;
-    case SINGLE_HOLD: unregister_code(KC_LSFT); break;
-    case DOUBLE_TAP: break;
-  }
-  xtap_state.state = 0;
-}
-
-qk_tap_dance_action_t tap_dance_actions[] = {
- [X_TAP_DANCE_1] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, x_finished_1, x_reset_1),
-};
-#endif
