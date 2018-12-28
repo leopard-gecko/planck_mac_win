@@ -228,10 +228,10 @@ void matrix_init_user(void) {
 
 // LED点灯 & Breathing
 #ifdef BACKLIGHT_ENABLE
-void led_breathing_on(uint8_t breathingspeed, bool breathing) {
+void led_breathing_on(uint8_t period, bool breathing) {
     backlight_enable();
     #ifdef BACKLIGHT_BREATHING
-      breathing_period_set(breathingspeed);
+      breathing_period_set(period);
       if (breathing) {
         breathing_enable();
       } else {
