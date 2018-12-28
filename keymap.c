@@ -6,7 +6,9 @@
 
 #include "planck.h"
 #include "action_layer.h"
-#include "keymap_jp.h"    // qmk_firmware/quantum/keymap_extras/keymap_jp.h
+// "keymap_jp.h"はJISで認識されたキーボードをUS配列として使うためのキーコード
+// ただしシフトキーを押したときの挙動は別に処理を書く必要あり
+#include "keymap_jp.h"  // qmk_firmware/quantum/keymap_extras/keymap_jp.h
 
 extern keymap_config_t keymap_config;
 
@@ -354,21 +356,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
     #ifdef BACKLIGHT_ENABLE
     case FN2_TAB:                          // LED点灯／消灯
+    case FN1_ESC:
        if (record->event.pressed) {
         if (!(IS_LAYER_ON(_LOWER) || IS_LAYER_ON(_RAISE) || IS_LAYER_ON(_RAISE_US))){
-          led_breathing_on(2, true);
-        }
-       } else {
-        if (!(IS_LAYER_ON(_LOWER) || IS_LAYER_ON(_RAISE) || IS_LAYER_ON(_RAISE_US))){
-          led_breathing_off();
-        }
-       }
-      return true;
-      break;
-    case FN1_ESC:                          // LED点灯／消灯
-       if (record->event.pressed) {
-        if (!(IS_LAYER_ON(_LOWER) || IS_LAYER_ON(_RAISE) || IS_LAYER_ON(_RAISE_US))){
-          led_breathing_on(4, true);
+            if (keycode == FN2_TAB) {
+                led_breathing_on(2, true);
+            } else {
+                led_breathing_on(5, true);
+            }
         }
        } else {
         if (!(IS_LAYER_ON(_LOWER) || IS_LAYER_ON(_RAISE) || IS_LAYER_ON(_RAISE_US))){
