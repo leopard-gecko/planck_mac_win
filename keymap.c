@@ -393,7 +393,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
-    case WN_SCLN:                          // 「;」と「:」
+    case WN_SCLN:                          // JISの「;」と「:」
       if (record->event.pressed) {
         lshift = keyboard_report->mods & MOD_BIT(KC_LSFT);
         rshift = keyboard_report->mods & MOD_BIT(KC_RSFT);
